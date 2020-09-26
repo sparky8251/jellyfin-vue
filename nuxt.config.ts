@@ -53,6 +53,7 @@ const config: NuxtConfig = {
     'plugins/snackbar.ts',
     'plugins/user.ts',
     // API
+    'plugins/brandingApi.ts',
     'plugins/displayPreferenceApi.ts',
     'plugins/imageApi.ts',
     'plugins/itemsApi.ts',
