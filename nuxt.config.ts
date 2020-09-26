@@ -57,6 +57,7 @@ const config: NuxtConfig = {
     'plugins/imageApi.ts',
     'plugins/itemsApi.ts',
     'plugins/libraryApi.ts',
+    'plugins/systemApi.ts',
     'plugins/tvShowsApi.ts',
     'plugins/userApi.ts',
     'plugins/userLibraryApi.ts',
