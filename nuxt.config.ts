@@ -50,6 +50,7 @@ const config: NuxtConfig = {
     'plugins/browserDetection.ts',
     'plugins/playbackProfile.ts',
     // API
+    'plugins/brandingApi.ts',
     'plugins/displayPreferenceApi.ts',
     'plugins/imageApi.ts',
     'plugins/itemsApi.ts',
