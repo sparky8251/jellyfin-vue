@@ -1,29 +1,33 @@
 <template>
   <div>
-    <v-tabs v-model="seasonTabs" class="mb-3">
+    <v-tabs v-model="tab" class="mb-3" background-color="transparent">
       <v-tab v-for="season in seasons" :key="season.Id">
         {{ season.Name }}
       </v-tab>
     </v-tabs>
-    <v-tabs-items v-model="seasonTabs">
+    <v-tabs-items v-model="tab" class="transparent">
       <v-tab-item v-for="season in seasons" :key="season.Id">
-        <vueper-slides
-          :visible-slides="3"
-          :arrows-outside="false"
-          slide-multiple
-          :gap="2"
-          :infinite="false"
-          :disable-arrows-on-edges="true"
-          :bullets="false"
-          :breakpoints="breakpoints"
-          :dragging-distance="200"
-        >
-          <vueper-slide v-for="episode in season.Episodes" :key="episode.Id">
-            <template v-slot:content>
-              <card :item="episode" episode />
-            </template>
-          </vueper-slide>
-        </vueper-slides>
+        <v-list two-line color="transparent">
+          <v-list-item
+            v-for="episode in seasonEpisodes[0]"
+            :key="episode.Id"
+            nuxt
+            :to="`/item/${episode.Id}/play`"
+          >
+            <v-list-item-avatar tile width="20em" height="12em">
+              <blurhash-image
+                v-if="episode.ImageTags && episode.ImageTags.Primary"
+                :item="episode"
+              />
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>{{ episode.Name }} </v-list-item-title>
+              <v-list-item-subtitle>{{
+                episode.Overview
+              }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
       </v-tab-item>
     </v-tabs-items>
   </div>
@@ -32,10 +36,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import { BaseItemDto } from '~/api';
-
-interface Season extends BaseItemDto {
-  Episodes?: Array<BaseItemDto>;
-}
 
 export default Vue.extend({
   props: {
@@ -46,8 +46,9 @@ export default Vue.extend({
   },
   data() {
     return {
-      seasons: [] as Season[],
-      seasonTabs: 1,
+      tab: null,
+      seasons: [] as BaseItemDto[],
+      seasonEpisodes: {},
       breakpoints: {
         600: {
           visibleSlides: 2
@@ -74,19 +75,18 @@ export default Vue.extend({
 
     this.seasons = seasons;
 
-    for (const season of this.seasons) {
+    for (const [index, season] of this.seasons.entries()) {
       const episodes = (
         await this.$api.items.getItems({
           uId: this.$auth.user.Id,
           userId: this.$auth.user.Id,
-          parentId: season.Id
+          parentId: season.Id,
+          fields: 'Overview'
         })
       ).data.Items as BaseItemDto[];
 
-      season.Episodes = episodes;
+      this.seasonEpisodes = episodes;
     }
-
-    this.seasonTabs = 0;
   }
 });
 </script>
